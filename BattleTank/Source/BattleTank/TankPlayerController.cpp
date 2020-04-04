@@ -20,7 +20,8 @@ void ATankPlayerController::Tick(float DeltaTime) {
 	if (GetAimPointWorldDirection(AimPointDirection)) {
 		FVector AimHitLocation;
 		if (GetAimHitLocation(AimHitLocation, AimPointDirection)) {
-			UE_LOG(LogTemp, Warning, TEXT("Aim hit location is at: %s"), *AimHitLocation.ToString());
+			//UE_LOG(LogTemp, Warning, TEXT("Aim hit location is at: %s"), *AimHitLocation.ToString());
+			GetTank()->AimAt(AimHitLocation);
 		}
 	}
 }

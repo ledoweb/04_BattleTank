@@ -4,23 +4,16 @@
 #include "TankAIController.h"
 
 void ATankAIController::BeginPlay() {
-	if (GetTank()) {
-		UE_LOG(LogTemp, Warning, TEXT("AI Possessing tank %s"), *GetTank()->GetName())
+	Super::BeginPlay();
+}
+
+void ATankAIController::Tick(float DeltaTime) {
+	Super::Tick(DeltaTime);
+	auto ControlledTank = Cast<ATank>(GetPawn());
+	auto PlayerTank = Cast<ATankPlayerController>(GetWorld()->GetFirstPlayerController())->GetTank();
+
+	if (PlayerTank) {
+		ControlledTank->AimAt(PlayerTank->GetActorLocation());
+		ControlledTank->Fire();
 	}
-
-	if (GetPlayerTank()) {
-		UE_LOG(LogTemp, Warning, TEXT("Player tank by AI is %s"), *GetPlayerTank()->GetName())
-	}
-}
-
-ATank* ATankAIController::GetTank() {
-	return Cast<ATank>(GetPawn());
-}
-
-ATank* ATankAIController::GetPlayerTank() {
-	return GetPlayerController()->GetTank();
-}
-
-ATankPlayerController* ATankAIController::GetPlayerController() {
-	return Cast<ATankPlayerController>(GetWorld()->GetFirstPlayerController());
 }
