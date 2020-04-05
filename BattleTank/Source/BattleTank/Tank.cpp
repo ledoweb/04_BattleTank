@@ -4,7 +4,7 @@
 #include "Tank.h"
 #include "TankBarrel.h"
 #include "TankTurret.h"
-#include "TankTrack.h"
+#include "TankTrackNew.h"
 #include "Projectile.h"
 
 // Sets default values
@@ -35,8 +35,8 @@ void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	SetTrackReferences();
 
 	PlayerInputComponent->BindAction(FName("Fire"), EInputEvent::IE_Released, this, &ATank::Fire);
-	PlayerInputComponent->BindAxis(FName("TankTrack_Left"), LeftTrack, &UTankTrack::SetThrottle);
-	PlayerInputComponent->BindAxis(FName("TankTrack_Right"), RightTrack, &UTankTrack::SetThrottle);
+	PlayerInputComponent->BindAxis(FName("TankTrack_Left"), LeftTrack, &UTankTrackNew::SetThrottle);
+	PlayerInputComponent->BindAxis(FName("TankTrack_Right"), RightTrack, &UTankTrackNew::SetThrottle);
 }
 
 void ATank::AimAt(FVector WorldSpaceCoordinate) {
@@ -62,13 +62,13 @@ void ATank::Fire() {
 }
 
 void ATank::SetTrackReferences() {
-	for (auto& TrackComponent : GetComponentsByClass(UTankTrack::StaticClass())) {
-		UTankTrack* Track = Cast<UTankTrack>(TrackComponent);
-		if (TrackComponent->GetName() == FString("LeftTrack")) {
+	for (auto& TrackComponent : GetComponentsByClass(UTankTrackNew::StaticClass())) {
+		UTankTrackNew* Track = Cast<UTankTrackNew>(TrackComponent);
+		if (TrackComponent->GetName() == FString("LeftTrackNew")) {
 			this->LeftTrack = Track;
 			UE_LOG(LogTemp, Warning, TEXT("LeftTrack assigned"))
 		}
-		if (TrackComponent->GetName() == FString("RightTrack")) {
+		if (TrackComponent->GetName() == FString("RightTrackNew")) {
 			this->RightTrack = Track;
 			UE_LOG(LogTemp, Warning, TEXT("RightTrack assigned"))
 		}

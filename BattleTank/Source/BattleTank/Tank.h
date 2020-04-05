@@ -10,7 +10,7 @@
 class UTankBarrel;
 class UTankTurret;
 class AProjectile;
-class UTankTrack;
+class UTankTrackNew;
 
 UCLASS()
 class BATTLETANK_API ATank : public APawn
@@ -42,8 +42,8 @@ public:
 
 	UTankAimComponent* TankAimComponent = nullptr;
 	UTankBarrel* TankBarrel = nullptr;
-	UTankTrack* LeftTrack = nullptr;
-	UTankTrack* RightTrack = nullptr;
+	UTankTrackNew* LeftTrack = nullptr;
+	UTankTrackNew* RightTrack = nullptr;
 
 	UPROPERTY(EditAnywhere, Category = Firing)
 	float ProjectileSpeed = 10000.0;
