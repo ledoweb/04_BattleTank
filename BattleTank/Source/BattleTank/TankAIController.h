@@ -20,4 +20,7 @@ class BATTLETANK_API ATankAIController : public AAIController
 public:
 	void BeginPlay() override;
 	void Tick(float DeltaTime) override;
+
+	UPROPERTY(EditAnywhere)
+	float AcceptanceRangeToPlayer = 300;
 };

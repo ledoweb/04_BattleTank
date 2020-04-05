@@ -3,7 +3,7 @@
 #include "BattleTank.h"
 #include "TankPlayerController.h"
 
-ATank* ATankPlayerController::GetTank() {
+ATank* ATankPlayerController::GetTank() const{
 	return Cast<ATank>(GetPawn());
 }
 

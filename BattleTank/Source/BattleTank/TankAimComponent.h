@@ -6,6 +6,11 @@
 #include "Components/ActorComponent.h"
 #include "TankAimComponent.generated.h"
 
+UENUM()
+enum class EAimState : uint8 {
+	Locked, Aiming, Reloading
+};
+
 class UTankBarrel;
 class UTankTurret;
 
@@ -29,6 +34,9 @@ public:
 	void SetBarrelComponent(UTankBarrel* BarrelComponent);
 	void SetTurretComponent(UTankTurret* TurretComponent);
 	void MoveBarrelTowards(FVector AimDirection);
+
+	UPROPERTY(BlueprintReadOnly)
+	EAimState AimState = EAimState::Reloading;
 
 private:
 	UTankBarrel* BarrelComponent = nullptr;

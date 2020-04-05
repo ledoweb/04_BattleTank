@@ -11,6 +11,7 @@ class UTankBarrel;
 class UTankTurret;
 class AProjectile;
 class UTankTrackNew;
+class UTankMovementComponent;
 
 UCLASS()
 class BATTLETANK_API ATank : public APawn
@@ -40,10 +41,14 @@ public:
 	void AimAt(FVector WorldSpaceCoordinate);
 	void Fire();
 
+	UPROPERTY(BlueprintReadOnly)
 	UTankAimComponent* TankAimComponent = nullptr;
 	UTankBarrel* TankBarrel = nullptr;
 	UTankTrackNew* LeftTrack = nullptr;
 	UTankTrackNew* RightTrack = nullptr;
+
+	UPROPERTY(BlueprintReadOnly)
+	UTankMovementComponent* TankMovementComponent = nullptr;
 
 	UPROPERTY(EditAnywhere, Category = Firing)
 	float ProjectileSpeed = 10000.0;

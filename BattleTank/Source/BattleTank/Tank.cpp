@@ -6,6 +6,7 @@
 #include "TankTurret.h"
 #include "TankTrackNew.h"
 #include "Projectile.h"
+#include "TankMovementComponent.h"
 
 // Sets default values
 ATank::ATank()
@@ -13,6 +14,7 @@ ATank::ATank()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	TankAimComponent = CreateDefaultSubobject<UTankAimComponent>(FName("Aiming Component"));
+	TankMovementComponent = CreateDefaultSubobject<UTankMovementComponent>(FName("Movement Component"));
 }
 
 // Called when the game starts or when spawned
@@ -37,6 +39,8 @@ void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAction(FName("Fire"), EInputEvent::IE_Released, this, &ATank::Fire);
 	PlayerInputComponent->BindAxis(FName("TankTrack_Left"), LeftTrack, &UTankTrackNew::SetThrottle);
 	PlayerInputComponent->BindAxis(FName("TankTrack_Right"), RightTrack, &UTankTrackNew::SetThrottle);
+	PlayerInputComponent->BindAxis(FName("TankMovement_Forward"), TankMovementComponent, &UTankMovementComponent::IntendMoveForward);
+	PlayerInputComponent->BindAxis(FName("TankMovement_Right"), TankMovementComponent, &UTankMovementComponent::IntendMoveRight);
 }
 
 void ATank::AimAt(FVector WorldSpaceCoordinate) {
@@ -62,7 +66,9 @@ void ATank::Fire() {
 }
 
 void ATank::SetTrackReferences() {
-	for (auto& TrackComponent : GetComponentsByClass(UTankTrackNew::StaticClass())) {
+	TArray<UActorComponent*> Tracks;
+	GetComponents(UTankTrackNew::StaticClass(), Tracks, true);
+	for (auto& TrackComponent : Tracks) {
 		UTankTrackNew* Track = Cast<UTankTrackNew>(TrackComponent);
 		if (TrackComponent->GetName() == FString("LeftTrackNew")) {
 			this->LeftTrack = Track;
