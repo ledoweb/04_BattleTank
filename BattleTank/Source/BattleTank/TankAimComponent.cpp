@@ -4,6 +4,7 @@
 #include "TankAimComponent.h"
 #include "TankBarrel.h"
 #include "TankTurret.h"
+#include "Projectile.h"
 
 // Sets default values for this component's properties
 UTankAimComponent::UTankAimComponent()
@@ -21,8 +22,7 @@ void UTankAimComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
-	
+	LastFireTime = FPlatformTime::Seconds();
 }
 
 
@@ -31,10 +31,23 @@ void UTankAimComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	if (FPlatformTime::Seconds() - LastFireTime > ReloadTimeSeconds) {
+		//UE_LOG(LogTemp, Warning, TEXT("%s vs %s"), *AimDirection.ToString(), *BarrelComponent->GetForwardVector().ToString())
+		if (BarrelComponent->GetForwardVector().Equals(AimDirection, 0.05)) {
+			AimState = EAimState::Locked;
+		}
+		else {
+			AimState = EAimState::Aiming;
+		}
+	}
 }
 
-void UTankAimComponent::AimAt(FVector WorldSpaceCoordinate, float ProjectileSpeed) {
+void UTankAimComponent::Initialize(UTankBarrel* Barrel, UTankTurret* Turret) {
+	this->BarrelComponent = Barrel;
+	this->TurretComponent = Turret;
+}
+
+void UTankAimComponent::AimAt(FVector WorldSpaceCoordinate) {
 	FVector ProjectileStartPosition = BarrelComponent->GetSocketLocation(FName("BarrelProjectileSpawn"));
 	FVector OutProjectileVector;
 	if (UGameplayStatics::SuggestProjectileVelocity(this, OutProjectileVector, ProjectileStartPosition, WorldSpaceCoordinate, ProjectileSpeed, false, 0, 0, ESuggestProjVelocityTraceOption::DoNotTrace)) {
@@ -49,17 +62,21 @@ void UTankAimComponent::AimAt(FVector WorldSpaceCoordinate, float ProjectileSpee
 }
 
 void UTankAimComponent::MoveBarrelTowards(FVector AimDirection) {
+	this->AimDirection = AimDirection;
 	auto BarrelRotator = BarrelComponent->GetForwardVector().Rotation();
 	auto AimAsRotator = AimDirection.Rotation();
 	auto DeltaRotator = AimAsRotator - BarrelRotator;
 	BarrelComponent->Elevate(DeltaRotator.Pitch);
 }
 
-void UTankAimComponent::SetBarrelComponent(UTankBarrel* BarrelComponent) {
-	this->BarrelComponent = BarrelComponent;
+void UTankAimComponent::Fire() {
+	bool bHasReloaded = FPlatformTime::Seconds() - LastFireTime > ReloadTimeSeconds;
+	if (BarrelComponent && AimState != EAimState::Reloading) {
+		auto Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBP, BarrelComponent->GetSocketLocation("BarrelProjectileSpawn"), BarrelComponent->GetSocketRotation("BarrelProjectileSpawn"));
+		Projectile->Launch(ProjectileSpeed);
+		LastFireTime = FPlatformTime::Seconds();
+		AimState = EAimState::Reloading;
+	}
 }
 
-void UTankAimComponent::SetTurretComponent(UTankTurret* TurretComponent) {
-	this->TurretComponent = TurretComponent;
-}
 

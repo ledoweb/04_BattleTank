@@ -13,6 +13,7 @@ enum class EAimState : uint8 {
 
 class UTankBarrel;
 class UTankTurret;
+class AProjectile;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class BATTLETANK_API UTankAimComponent : public UActorComponent
@@ -30,13 +31,28 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	void AimAt(FVector WorldSpaceCoordinate, float ProjectileSpeed);
-	void SetBarrelComponent(UTankBarrel* BarrelComponent);
-	void SetTurretComponent(UTankTurret* TurretComponent);
+	void AimAt(FVector WorldSpaceCoordinate);
 	void MoveBarrelTowards(FVector AimDirection);
+	void Fire();
+
+	UFUNCTION(BlueprintCallable)
+	void Initialize(UTankBarrel* Barrel, UTankTurret* Turret);
 
 	UPROPERTY(BlueprintReadOnly)
-	EAimState AimState = EAimState::Reloading;
+	EAimState AimState = EAimState::Aiming;
+
+	UPROPERTY(EditAnywhere, Category = Firing)
+	float ProjectileSpeed = 10000.0;
+
+	UPROPERTY(EditAnywhere, Category = Firing)
+	TSubclassOf<AProjectile> ProjectileBP;
+
+	UPROPERTY(EditDefaultsOnly, Category = Firing)
+	float ReloadTimeSeconds = 3;
+
+	double LastFireTime = 0;
+
+	FVector AimDirection;
 
 private:
 	UTankBarrel* BarrelComponent = nullptr;

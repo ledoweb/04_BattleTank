@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "BattleTank.h"
+#include "TankAimComponent.h"
 #include "TankPlayerController.h"
 
 ATank* ATankPlayerController::GetTank() const{
@@ -21,7 +22,7 @@ void ATankPlayerController::Tick(float DeltaTime) {
 		FVector AimHitLocation;
 		if (GetAimHitLocation(AimHitLocation, AimPointDirection)) {
 			//UE_LOG(LogTemp, Warning, TEXT("Aim hit location is at: %s"), *AimHitLocation.ToString());
-			GetTank()->AimAt(AimHitLocation);
+			GetTank()->TankAimComponent->AimAt(AimHitLocation);
 		}
 	}
 }
