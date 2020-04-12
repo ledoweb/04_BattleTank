@@ -32,11 +32,15 @@ void UTankTurret::TickComponent(float DeltaTime, ELevelTick TickType, FActorComp
 	// ...
 }
 
-void UTankTurret::RotateTowards(FVector Direction) 
+void UTankTurret::RotateTowards(FVector Direction)
 {
 	auto CurrentRotation = GetForwardVector().Rotation();
 	auto TargetRotation = Direction.Rotation();
-	auto ClampedDelta = FMath::Clamp<float>((TargetRotation - CurrentRotation).Yaw, -1, 1);
+	auto YawRotation = (TargetRotation - CurrentRotation).Yaw;
+	if (FMath::Abs(YawRotation) > 180) {
+		YawRotation = -YawRotation;
+	}
+	auto ClampedDelta = FMath::Clamp<float>(YawRotation, -1, 1);
 	auto Delta = Speed * ClampedDelta * GetWorld()->DeltaTimeSeconds;
 	AddLocalRotation(FRotator(0, Delta, 0));
 }

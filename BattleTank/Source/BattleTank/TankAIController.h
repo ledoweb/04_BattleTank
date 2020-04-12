@@ -20,5 +20,5 @@ public:
 	void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere)
-	float AcceptanceRangeToPlayer = 300;
+	float AcceptanceRangeToPlayer = 1000;
 };

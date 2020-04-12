@@ -8,7 +8,7 @@
 
 UENUM()
 enum class EAimState : uint8 {
-	Locked, Aiming, Reloading
+	Locked, Aiming, Reloading, OutOfAmmo
 };
 
 class UTankBarrel;
@@ -53,6 +53,9 @@ public:
 	double LastFireTime = 0;
 
 	FVector AimDirection;
+
+	UPROPERTY(BlueprintReadOnly)
+	int Rounds = 3;
 
 private:
 	UTankBarrel* BarrelComponent = nullptr;

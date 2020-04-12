@@ -10,24 +10,37 @@ AProjectile::AProjectile()
 	PrimaryActorTick.bCanEverTick = true;
 	MovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(FName("ProjectileMovementComponent"));
 	MovementComponent->bAutoActivate = false;
+
+	CollisionMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("CollisionMesh"));
+	SetRootComponent(CollisionMesh);
+	CollisionMesh->SetNotifyRigidBodyCollision(true);
+	CollisionMesh->SetVisibility(true);
+
+	LaunchBlast = CreateDefaultSubobject<UParticleSystemComponent>(FName("LaunchBlast"));
+	LaunchBlast->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+
+	Explosion = CreateDefaultSubobject<UParticleSystemComponent>(FName("Explosion"));
+	Explosion->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	Explosion->bAutoActivate = false;
 }
 
 // Called when the game starts or when spawned
 void AProjectile::BeginPlay()
 {
 	Super::BeginPlay();
-	
-}
+	PrimaryActorTick.bCanEverTick = false;
 
-// Called every frame
-void AProjectile::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
+	CollisionMesh->OnComponentHit.AddDynamic(this, &AProjectile::OnHit);
 }
 
 void AProjectile::Launch(float Speed) {
 	MovementComponent->SetVelocityInLocalSpace(FVector::ForwardVector * Speed);
 	MovementComponent->Activate();
+}
+
+void AProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
+{
+	LaunchBlast->Deactivate();
+	Explosion->Activate();
 }
 

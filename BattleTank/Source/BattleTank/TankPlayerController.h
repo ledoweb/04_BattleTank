@@ -25,12 +25,12 @@ private:
 	bool GetAimHitLocation(FVector& result, FVector direction);
 	bool GetAimPointWorldDirection(FVector& direction);
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly)
 	float AimDistance = 10000.0;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly)
 	float CrosshairPositionX = 0.5;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly)
 	float CrosshairPositionY = 0.3333;
 };

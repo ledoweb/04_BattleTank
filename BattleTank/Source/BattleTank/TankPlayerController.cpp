@@ -44,7 +44,7 @@ bool ATankPlayerController::GetAimHitLocation(FVector &result, FVector direction
 	FVector CameraLocation = PlayerCameraManager->GetCameraLocation();
 
 	FHitResult HitResult;
-	if (GetWorld()->LineTraceSingleByChannel(HitResult, CameraLocation, CameraLocation + AimDistance * direction, ECollisionChannel::ECC_Visibility)) {
+	if (GetWorld()->LineTraceSingleByChannel(HitResult, CameraLocation, CameraLocation + (AimDistance * direction), ECollisionChannel::ECC_Visibility)) {
 		result = HitResult.Location;
 		return true;
 	}

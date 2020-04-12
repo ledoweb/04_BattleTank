@@ -31,9 +31,14 @@ void UTankAimComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	if (Rounds == 0) {
+		AimState = EAimState::OutOfAmmo;
+		return;
+	}
+
 	if (FPlatformTime::Seconds() - LastFireTime > ReloadTimeSeconds) {
-		//UE_LOG(LogTemp, Warning, TEXT("%s vs %s"), *AimDirection.ToString(), *BarrelComponent->GetForwardVector().ToString())
-		if (BarrelComponent->GetForwardVector().Equals(AimDirection, 0.05)) {
+		UE_LOG(LogTemp, Warning, TEXT("%s vs %s"), *AimDirection.ToString(), *BarrelComponent->GetForwardVector().ToString())
+		if (BarrelComponent->GetForwardVector().Equals(AimDirection, 0.2)) {
 			AimState = EAimState::Locked;
 		}
 		else {
@@ -71,11 +76,12 @@ void UTankAimComponent::MoveBarrelTowards(FVector AimDirection) {
 
 void UTankAimComponent::Fire() {
 	bool bHasReloaded = FPlatformTime::Seconds() - LastFireTime > ReloadTimeSeconds;
-	if (BarrelComponent && AimState != EAimState::Reloading) {
+	if (BarrelComponent && (AimState == EAimState::Reloading || AimState == EAimState::Locked)) {
 		auto Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBP, BarrelComponent->GetSocketLocation("BarrelProjectileSpawn"), BarrelComponent->GetSocketRotation("BarrelProjectileSpawn"));
 		Projectile->Launch(ProjectileSpeed);
 		LastFireTime = FPlatformTime::Seconds();
 		AimState = EAimState::Reloading;
+		Rounds--;
 	}
 }
 

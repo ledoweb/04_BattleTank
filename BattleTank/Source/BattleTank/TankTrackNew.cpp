@@ -18,6 +18,7 @@ void UTankTrackNew::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
 	//UE_LOG(LogTemp, Warning, TEXT("I'm hit, I'm hit!"))
 	ApplySidewaysForce(GetWorld()->DeltaTimeSeconds);
 	ApplyThrottle();
+	CurrentThrottle = 0.0;
 }
 
 void UTankTrackNew::SetThrottle(float Throttle) {
