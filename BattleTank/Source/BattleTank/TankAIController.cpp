@@ -15,10 +15,10 @@ void ATankAIController::Tick(float DeltaTime) {
 	auto TankAimComponent = Cast<UTankAimComponent>(ControlledTank->GetComponentByClass(UTankAimComponent::StaticClass()));
 	auto PlayerTank = Cast<ATankPlayerController>(GetWorld()->GetFirstPlayerController())->GetTank();
 
-	if (ensure(PlayerTank)) {
+	if (PlayerTank) {
 		MoveToActor(PlayerTank, AcceptanceRangeToPlayer);
 
-		if (ensure(ControlledTank) && ensure(TankAimComponent)) {
+		if (ControlledTank && TankAimComponent) {
 			TankAimComponent->AimAt(PlayerTank->GetActorLocation());
 
 			if (TankAimComponent->AimState == EAimState::Locked) {
@@ -26,4 +26,20 @@ void ATankAIController::Tick(float DeltaTime) {
 			}
 		}
 	}
+}
+
+void ATankAIController::SetPawn(APawn* InPawn) {
+	Super::SetPawn(InPawn);
+
+	if (InPawn) {
+		ATank* Tank = Cast<ATank>(InPawn);
+		if (Tank) {
+			Tank->OnDeath.AddUniqueDynamic(this, &ATankAIController::OnDeath);
+		}
+	}
+}
+
+void ATankAIController::OnDeath() {
+	UE_LOG(LogTemp, Warning, TEXT("%s is dead"), *GetPawn()->GetName());
+	GetPawn()->DetachFromControllerPendingDestroy();
 }

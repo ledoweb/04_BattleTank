@@ -20,6 +20,7 @@ public:
 	ATank* GetTank() const;
 	void BeginPlay() override;
 	void Tick(float DeltaTime) override;
+	void SetPawn(APawn* InPawn) override;
 
 private:
 	bool GetAimHitLocation(FVector& result, FVector direction);
@@ -33,4 +34,7 @@ private:
 
 	UPROPERTY(EditDefaultsOnly)
 	float CrosshairPositionY = 0.3333;
+
+	UFUNCTION()
+	void OnDeath();
 };

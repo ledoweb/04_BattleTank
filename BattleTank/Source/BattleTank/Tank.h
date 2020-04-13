@@ -12,6 +12,8 @@ class UTankTurret;
 class UTankTrackNew;
 class UTankMovementComponent;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeath);
+
 UCLASS()
 class BATTLETANK_API ATank : public APawn
 {
@@ -32,6 +34,11 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+
+	UFUNCTION(BlueprintPure)
+	float GetHealthPercentage() const;
+
 	UPROPERTY(BlueprintReadWrite)
 	UTankAimComponent* TankAimComponent = nullptr;
 	UTankTrackNew* LeftTrack = nullptr;
@@ -40,6 +47,12 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	UTankMovementComponent* TankMovementComponent = nullptr;
 
+	UPROPERTY(EditDefaultsOnly)
+	int32 StartHealth;
+
+	int32 Health;
+
+	FOnDeath OnDeath;
 private:
 	void SetTrackReferences();
 };

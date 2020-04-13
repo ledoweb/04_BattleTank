@@ -19,6 +19,11 @@ public:
 	void BeginPlay() override;
 	void Tick(float DeltaTime) override;
 
+	void SetPawn(APawn* InPawn) override;
+
 	UPROPERTY(EditAnywhere)
 	float AcceptanceRangeToPlayer = 1000;
+
+	UFUNCTION()
+	void OnDeath();
 };

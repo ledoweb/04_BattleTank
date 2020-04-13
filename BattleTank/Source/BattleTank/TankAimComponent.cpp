@@ -37,7 +37,7 @@ void UTankAimComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 	}
 
 	if (FPlatformTime::Seconds() - LastFireTime > ReloadTimeSeconds) {
-		UE_LOG(LogTemp, Warning, TEXT("%s vs %s"), *AimDirection.ToString(), *BarrelComponent->GetForwardVector().ToString())
+		//UE_LOG(LogTemp, Warning, TEXT("%s vs %s"), *AimDirection.ToString(), *BarrelComponent->GetForwardVector().ToString())
 		if (BarrelComponent->GetForwardVector().Equals(AimDirection, 0.2)) {
 			AimState = EAimState::Locked;
 		}

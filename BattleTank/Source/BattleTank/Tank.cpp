@@ -18,6 +18,7 @@ ATank::ATank()
 void ATank::BeginPlay()
 {
 	Super::BeginPlay();
+	Health = StartHealth;
 }
 
 // Called every frame
@@ -54,4 +55,18 @@ void ATank::SetTrackReferences() {
 			UE_LOG(LogTemp, Warning, TEXT("RightTrack assigned"))
 		}
 	}
+}
+
+float ATank::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) {
+	this->Health = FMath::Clamp<int32>(Health - DamageAmount, 0, Health);
+	UE_LOG(LogTemp, Warning, TEXT("New health: %i"), this->Health);
+	if (Health == 0) {
+		OnDeath.Broadcast();
+	}
+	return DamageAmount;
+}
+
+float ATank::GetHealthPercentage() const
+{
+	return (float)Health/(float)StartHealth;
 }

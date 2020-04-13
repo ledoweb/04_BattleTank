@@ -34,9 +34,20 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	UParticleSystemComponent* Explosion;
 
+	UPROPERTY(VisibleAnywhere)
+	URadialForceComponent* ExplosionImpulse;
+
+	UPROPERTY(EditDefaultsOnly)
+	float DestroyDelaySeconds = 5;
+
+	UPROPERTY(EditDefaultsOnly)
+	float Damage = 10;
+
 private:
 	UProjectileMovementComponent* MovementComponent = nullptr;
 
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
+
+	void OnTimerExpired();
 };

@@ -27,6 +27,16 @@ void ATankPlayerController::Tick(float DeltaTime) {
 	}
 }
 
+void ATankPlayerController::SetPawn(APawn* InPawn) {
+	Super::SetPawn(InPawn);
+	if (InPawn) {
+		ATank* Tank = Cast<ATank>(InPawn);
+		if (Tank) {
+			Tank->OnDeath.AddUniqueDynamic(this, &ATankPlayerController::OnDeath);
+		}
+	}
+}
+
 bool ATankPlayerController::GetAimPointWorldDirection(FVector& direction) {
 	FVector2D ViewportSize;
 	GetWorld()->GetGameViewport()->GetViewportSize(ViewportSize);
@@ -44,10 +54,15 @@ bool ATankPlayerController::GetAimHitLocation(FVector &result, FVector direction
 	FVector CameraLocation = PlayerCameraManager->GetCameraLocation();
 
 	FHitResult HitResult;
-	if (GetWorld()->LineTraceSingleByChannel(HitResult, CameraLocation, CameraLocation + (AimDistance * direction), ECollisionChannel::ECC_Visibility)) {
+	if (GetWorld()->LineTraceSingleByChannel(HitResult, CameraLocation, CameraLocation + (AimDistance * direction), ECollisionChannel::ECC_Camera)) {
 		result = HitResult.Location;
 		return true;
 	}
 	result = FVector(0.0);
 	return false;
+}
+
+void ATankPlayerController::OnDeath() {
+	UE_LOG(LogTemp, Warning, TEXT("%s is dead"), *GetPawn()->GetName());
+	StartSpectatingOnly();
 }

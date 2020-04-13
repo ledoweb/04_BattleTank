@@ -48,14 +48,14 @@ public:
 	TSubclassOf<AProjectile> ProjectileBP;
 
 	UPROPERTY(EditDefaultsOnly, Category = Firing)
-	float ReloadTimeSeconds = 3;
+	float ReloadTimeSeconds = 2;
 
 	double LastFireTime = 0;
 
 	FVector AimDirection;
 
 	UPROPERTY(BlueprintReadOnly)
-	int Rounds = 3;
+	int Rounds = 10;
 
 private:
 	UTankBarrel* BarrelComponent = nullptr;

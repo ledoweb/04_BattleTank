@@ -22,6 +22,10 @@ AProjectile::AProjectile()
 	Explosion = CreateDefaultSubobject<UParticleSystemComponent>(FName("Explosion"));
 	Explosion->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	Explosion->bAutoActivate = false;
+
+	ExplosionImpulse = CreateDefaultSubobject<URadialForceComponent>(FName("ExplosionForce"));
+	ExplosionImpulse->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	ExplosionImpulse->bAutoActivate = false;
 }
 
 // Called when the game starts or when spawned
@@ -41,6 +45,18 @@ void AProjectile::Launch(float Speed) {
 void AProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
 {
 	LaunchBlast->Deactivate();
+	SetRootComponent(Explosion);
+	CollisionMesh->DestroyComponent();
 	Explosion->Activate();
+	ExplosionImpulse->FireImpulse();
+
+	UGameplayStatics::ApplyRadialDamage(this, Damage, GetActorLocation(), ExplosionImpulse->Radius, UDamageType::StaticClass(), TArray<AActor*>());
+
+	FTimerHandle TimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &AProjectile::OnTimerExpired, DestroyDelaySeconds, false);
+}
+
+void AProjectile::OnTimerExpired() {
+	Destroy();
 }
 
